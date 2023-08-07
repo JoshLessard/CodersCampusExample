@@ -6,23 +6,22 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import dev.joshlessard.CodersCampusExample.domain.User;
+import dev.joshlessard.CodersCampusExample.repository.UserRepository;
 
 public class DefaultUserDetailsService implements UserDetailsService {
 
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder; // TODO Get rid of me
+    private final UserRepository userRepository;
 
     @Autowired
-    public DefaultUserDetailsService( PasswordEncoder passwordEncoder ) {
+    public DefaultUserDetailsService( PasswordEncoder passwordEncoder, UserRepository userRepository ) {
         this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername( String username ) throws UsernameNotFoundException {
-        User user = new User();
-        user.setUsername( username );
-        user.setPassword( passwordEncoder.encode( "asdfasdf" ) );
-        user.setId( 1L );
-        return user;
+        return userRepository.findByUsername( username )
+            .orElseThrow( () -> new UsernameNotFoundException( "Invalid credentials" ) );
     }
 }
