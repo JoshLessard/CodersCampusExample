@@ -49,7 +49,8 @@ public class SecurityConfiguration {
             )
             .authorizeHttpRequests(
                 customizer -> customizer
-                    .requestMatchers( antMatcher( "/api/auth/**" ), antMatcher( "/h2-console/**" ) ).permitAll()
+                    .requestMatchers( antMatcher( "/api/auth/**" ) ).permitAll()
+                    .requestMatchers( antMatcher( "/h2-console/**" ) ).permitAll()
                     .anyRequest().authenticated()
             )
             .addFilterBefore( jwtFilter, UsernamePasswordAuthenticationFilter.class );
