@@ -1,12 +1,13 @@
 package dev.joshlessard.CodersCampusExample.configuration;
 
-import static org.springframework.security.config.Customizer.withDefaults;
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,8 +36,9 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain( HttpSecurity http ) throws Exception {
         // TODO Might need to use deprecated no-arg methods
         http
-            .csrf( AbstractHttpConfigurer::disable )
-            .cors( AbstractHttpConfigurer::disable )
+            .csrf( CsrfConfigurer::disable )
+            .cors( CorsConfigurer::disable )
+            .headers( customizer -> customizer.frameOptions( FrameOptionsConfig::disable ) ) // TODO Only for H2 console
             .sessionManagement( customizer -> customizer.sessionCreationPolicy( SessionCreationPolicy.STATELESS ) )
             .exceptionHandling(
                 customizer -> customizer
@@ -47,9 +49,9 @@ public class SecurityConfiguration {
             )
             .authorizeHttpRequests(
                 customizer -> customizer
+                    .requestMatchers( antMatcher( "/api/auth/**" ), antMatcher( "/h2-console/**" ) ).permitAll()
                     .anyRequest().authenticated()
             )
-            .formLogin( withDefaults() )
             .addFilterBefore( jwtFilter, UsernamePasswordAuthenticationFilter.class );
 
         return http.build();
@@ -61,7 +63,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder, UserRepository userRepository ) {
+    public UserDetailsService userDetailsService( PasswordEncoder passwordEncoder, UserRepository userRepository ) {
         return new DefaultUserDetailsService( passwordEncoder, userRepository );
     }
 }
