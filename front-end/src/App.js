@@ -2,6 +2,9 @@
 import './App.css';
 import { useEffect } from 'react';
 import { useLocalState } from './util/useLocalStorage';
+import { Route, Routes } from 'react-router-dom';
+import Dashboard from './Dashboard';
+import Homepage from './Homepage';
 
 function App() {
 
@@ -29,10 +32,10 @@ function App() {
   }, [jwt] )
 
   return (
-    <div className="App">
-      <h1>Hello world!</h1>
-      <div>JWT value is {jwt}</div>
-    </div>
+    <Routes>
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/" element={<Homepage />} />
+    </Routes>
   )
 }
 
