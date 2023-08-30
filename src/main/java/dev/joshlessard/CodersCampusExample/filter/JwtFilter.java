@@ -36,24 +36,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal( HttpServletRequest request, HttpServletResponse response, FilterChain chain ) throws ServletException, IOException {
-        if (request.getCookies() == null) {
-            chain.doFilter(request, response);
-            return;
-        }
-        // Get authorization header and validate
-        Optional<Cookie> jwtOpt = Arrays.stream(request.getCookies())
-            .filter(cookie -> "jwt".equals(cookie.getName()))
-            .findAny();
-
-        if (jwtOpt.isEmpty()) {
+        String authorizationToken = getAuthorizationToken( request );
+        if (authorizationToken == null) {
             chain.doFilter(request, response);
             return;
         }
 
-        String token = jwtOpt.get().getValue();
         UserDetails userDetails = null;
         try {
-            userDetails = userRepository.findByUsername( jwtUtil.getUsernameFromToken( token ) )
+            userDetails = userRepository.findByUsername( jwtUtil.getUsernameFromToken( authorizationToken ) )
                 .orElse( null );
 //            Optional<User> appUserOpt = userRepository.findByUsername(jwtUtil.getUsernameFromToken(token));
 //            userDetails = proffessoUserRepo
@@ -66,7 +57,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         // Get jwt token and validate
-        if (!jwtUtil.validateToken(token, userDetails)) {
+        if (!jwtUtil.validateToken(authorizationToken, userDetails)) {
             chain.doFilter(request, response);
             return;
         }
@@ -87,5 +78,11 @@ public class JwtFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         chain.doFilter(request, response);
+    }
+
+    private String getAuthorizationToken( HttpServletRequest request ) {
+        return Optional.ofNullable( request.getHeader( "Authorization" ) )
+            .map( h -> h.substring( 7 ) )
+            .orElse( null );
     }
 }
