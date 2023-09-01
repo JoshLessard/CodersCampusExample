@@ -1,5 +1,8 @@
 package dev.joshlessard.CodersCampusExample.service;
 
+import java.util.Collection;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,5 +26,13 @@ public class AssignmentService {
         assignment.setUser( user );
 
         return assignmentRepository.save( assignment );
+    }
+
+    public Collection<Assignment> findByUser( User user ) {
+        return assignmentRepository.findByUser( user );
+    }
+
+    public Optional<Assignment> findById( long id ) {
+        return assignmentRepository.findById( id );
     }
 }

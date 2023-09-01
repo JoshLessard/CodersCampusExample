@@ -1,12 +1,27 @@
+import { useEffect, useState } from "react";
 import { useLocalState } from "../util/useLocalStorage";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
 
     const [jwt, setJwt] = useLocalState( "", "jwt" )
+    const [assignments, setAssignments] = useState( null );
+
+    useEffect( () => {
+      fetch( "/api/assignments", {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${jwt}`
+        },
+        method: "GET"
+      })
+      .then( response => { if ( response.status === 200 ) return response.json() } )
+      .then( assignmentsData => setAssignments( assignmentsData ) );
+    }, [] );
 
     function createAssignment() {
       fetch(
-        "api/assignments",
+        "/api/assignments",
         {
           headers: {
             "Content-Type": "application/json",
@@ -25,6 +40,13 @@ const Dashboard = () => {
 
     return (
         <div style={{ margin: "2em" }}>
+          { assignments
+            ? assignments.map( assignment =>
+              <div>
+                <Link to={`/assignments/${assignment.id}`}>Assignment ID: {assignment.id}</Link>
+              </div> )
+            : <></>
+          }
           <button onClick={() => createAssignment()}>Submit New Assignment</button>
         </div>
     )

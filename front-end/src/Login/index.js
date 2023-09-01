@@ -8,7 +8,7 @@ const Login = () => {
     const [jwt, setJwt] = useLocalState( "", "jwt" );
 
     function sendLoginRequest() {
-        fetch( "api/auth/login", {
+        fetch( "/api/auth/login", {
             headers: {
                 "Content-Type": "application/json"
             },
