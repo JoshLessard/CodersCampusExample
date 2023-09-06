@@ -20,11 +20,15 @@ public class AssignmentService {
         this.assignmentRepository = assignmentRepository;
     }
 
-    public Assignment save( User user ) {
+    public Assignment saveNewAssignmentFor( User user ) {
         Assignment assignment = new Assignment();
         assignment.setStatus( "Needs to be Submitted" );
         assignment.setUser( user );
 
+        return assignmentRepository.save( assignment );
+    }
+
+    public Assignment save( Assignment assignment ) {
         return assignmentRepository.save( assignment );
     }
 
