@@ -19,7 +19,7 @@ const Login = () => {
             } )
         } )
             .then( response => {
-                if ( response.status === 200) {
+                if ( response.status === 200 ) {
                     return response;
                 } else {
                     return Promise.reject( "Invalid login attempt" );
