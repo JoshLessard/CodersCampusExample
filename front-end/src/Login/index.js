@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocalState } from "../util/useLocalStorage";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 
 const Login = () => {
 
@@ -36,27 +37,40 @@ const Login = () => {
 
     return (
         <>
-            <div>
-                <label htmlFor="username">Username</label>
-                <input
-                    type="email"
-                    id="username"
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                />
-            </div>
-            <div>
-                <label htmlFor="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                />
-            </div>
-            <div>
-                <button id="submit" type="button" onClick={() => sendLoginRequest()}>Log In</button>
-            </div>
+            <Container className="mt-5">
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="username" className="fs-4">Username</Form.Label>
+                    <Form.Control
+                        type="email"
+                        id="username"
+                        placeholder="Enter your email address"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                    />
+                </Form.Group>
+                <Form.Group className="mb-3">
+                    <Form.Label htmlFor="password" className="fs-4">Password</Form.Label>
+                    <Form.Control
+                        type="password"
+                        id="password"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                    />
+                </Form.Group>
+                <Row>
+                    <Col className="mt-2">
+                        <div>
+                            <Button
+                                id="submit"
+                                type="button"
+                                onClick={() => sendLoginRequest()}
+                            >
+                                Log In
+                            </Button>
+                        </div>
+                    </Col>
+                </Row>
+            </Container>
         </>
     )
 }
