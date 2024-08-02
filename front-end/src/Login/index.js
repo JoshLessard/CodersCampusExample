@@ -63,9 +63,18 @@ const Login = () => {
                             <Button
                                 id="submit"
                                 type="button"
+                                size="lg"
                                 onClick={() => sendLoginRequest()}
                             >
                                 Log In
+                            </Button>
+                            <Button
+                                variant="secondary"
+                                type="button"
+                                size="lg"
+                                onClick={() => {window.location.href="/"}}
+                            >
+                                Exit
                             </Button>
                         </div>
                     </Col>
