@@ -83,7 +83,7 @@ public class JwtUtil implements Serializable {
         return (!isTokenExpired(token) || ignoreTokenExpiration(token));
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public boolean validateToken(String token, UserDetails userDetails) {
         if (!StringUtils.hasText(token))
             return false;
 
