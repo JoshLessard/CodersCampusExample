@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.joshlessard.CodersCampusExample.domain.Assignment;
 import dev.joshlessard.CodersCampusExample.domain.User;
+import dev.joshlessard.CodersCampusExample.dto.AssignmentResponseDto;
 import dev.joshlessard.CodersCampusExample.service.AssignmentService;
 
 @RestController
@@ -34,6 +35,7 @@ public class AssignmentController {
     @GetMapping( "{assignmentId}" )
     public ResponseEntity<?> getAssignment( @AuthenticationPrincipal User user, @PathVariable long assignmentId ) {
         return assignmentService.findById( assignmentId )
+            .map( AssignmentResponseDto::new )
             .map( ResponseEntity::ok )
             .orElseGet( ResponseEntity.notFound()::build );
     }
