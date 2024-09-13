@@ -12,7 +12,7 @@ const Dashboard = () => {
     useEffect( () => {
       ajax( "/api/assignments", "GET", jwt )
         .then( assignmentsData => setAssignments( assignmentsData ) );
-    }, [] );
+    }, [jwt] );
 
     function createAssignment() {
       ajax( "/api/assignments", "POST", jwt )
