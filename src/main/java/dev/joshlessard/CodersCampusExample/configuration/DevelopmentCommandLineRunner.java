@@ -38,7 +38,7 @@ public class DevelopmentCommandLineRunner implements CommandLineRunner {
     private Assignment createAssignment( User user ) {
         Assignment assignment = new Assignment();
         assignment.setUser( user );
-        assignment.setStatus( "Needs to be Submitted" );
+        assignment.setStatus( "Pending Submission" );
         assignment.setGithubUrl( "https://www.byteme.com" );
         assignment.setBranch( "master" );
         return assignment;

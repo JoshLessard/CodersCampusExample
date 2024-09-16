@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import dev.joshlessard.CodersCampusExample.domain.Assignment;
 import dev.joshlessard.CodersCampusExample.domain.User;
+import dev.joshlessard.CodersCampusExample.enums.AssignmentStatusEnum;
 import dev.joshlessard.CodersCampusExample.repository.AssignmentRepository;
 
 @Service
@@ -22,7 +23,7 @@ public class AssignmentService {
 
     public Assignment saveNewAssignmentFor( User user ) {
         Assignment assignment = new Assignment();
-        assignment.setStatus( "Needs to be Submitted" );
+        assignment.setStatus( AssignmentStatusEnum.PENDING_SUBMISSION.status() );
         assignment.setUser( user );
 
         return assignmentRepository.save( assignment );
