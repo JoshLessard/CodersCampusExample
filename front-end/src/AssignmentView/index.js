@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocalState } from "../util/useLocalStorage";
 import ajax from "../Services/fetchService";
 import { Badge, Button, ButtonGroup, Col, Container, Dropdown, DropdownButton, Form, Row } from "react-bootstrap";
@@ -14,6 +14,7 @@ const AssignmentView = () => {
     } );
     const [assignmentEnums, setAssignmentEnums] = useState( [] );
     const [assignmentStatuses, setAssignmentStatuses] = useState( [] );
+    const previousAssignment = useRef( assignment );
 
     function updateAssignment( prop, value ) {
         const updatedAssignment = {...assignment};
@@ -25,11 +26,23 @@ const AssignmentView = () => {
         // this implies that the student is submitting the assignment for the first time
         if ( assignment.status === assignmentStatuses[0].status ) {
             updateAssignment( "status", assignmentStatuses[1].status );
+        } else {
+            putAssignment();
         }
 
+    }
+
+    function putAssignment() {
         ajax( `/api/assignments/${assignmentId}`, "PUT", jwt, assignment )
             .then( assignmentData => { setAssignment( assignmentData ); } );
     }
+
+    useEffect( () => {
+        if ( previousAssignment.current.status !== assignment.status ) {
+            putAssignment();
+        }
+        previousAssignment.current = assignment;
+    }, [assignment]);
 
     useEffect( () => {
         ajax( `/api/assignments/${assignmentId}`, "GET", jwt )
@@ -38,7 +51,7 @@ const AssignmentView = () => {
                 setAssignmentEnums( assignmentResponse.assignmentEnums );
                 setAssignmentStatuses( assignmentResponse.statusEnums );
             } );
-    }, [] );
+    }, [jwt, assignmentId] );
 
     return (
         <Container className="mt-5">
@@ -74,7 +87,6 @@ const AssignmentView = () => {
                                             : "Select an assignment"
                                     }
                                     onSelect={selectedIndex => {
-                                        console.log( selectedIndex )
                                         updateAssignment( "number", selectedIndex )}
                                     }
                                 >

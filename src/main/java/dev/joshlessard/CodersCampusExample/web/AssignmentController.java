@@ -51,10 +51,6 @@ public class AssignmentController {
 
     @PutMapping( "{assignmentId}" )
     public ResponseEntity<?> updateAssignment( @AuthenticationPrincipal User user, @PathVariable long assignmentId, @RequestBody Assignment assignment ) {
-        if ( assignment.getStatus().equals( AssignmentStatusEnum.PENDING_SUBMISSION.status() ) ) {
-            // Hack to get around the author's terrible use of a "set" hook in a synchronous way
-            assignment.setStatus( AssignmentStatusEnum.SUBMITTED.status() );
-        }
         Assignment updatedAssignment = assignmentService.save( assignment );
 
         return ResponseEntity.ok( updatedAssignment );
