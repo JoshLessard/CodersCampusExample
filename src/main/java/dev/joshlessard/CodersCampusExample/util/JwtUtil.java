@@ -61,10 +61,13 @@ public class JwtUtil implements Serializable {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("authorities", userDetails.getAuthorities()
+        claims.put(
+            "authorities",
+            userDetails.getAuthorities()
                 .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(toList()));
+                .map( GrantedAuthority::getAuthority )
+                .toList()
+        );
         return doGenerateToken(claims, userDetails.getUsername());
     }
 

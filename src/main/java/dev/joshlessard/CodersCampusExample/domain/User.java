@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -30,7 +31,7 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
     @JsonIgnore
-    @OneToMany( fetch = FetchType.EAGER, mappedBy = "user" )
+    @OneToMany( fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL )
     private List<Authority> authorities = new ArrayList<>();
 
     public Long getId() {

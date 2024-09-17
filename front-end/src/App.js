@@ -1,6 +1,7 @@
  import logo from './logo.svg';
+ import { jwtDecode } from "jwt-decode";
 import './App.css';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocalState } from './util/useLocalStorage';
 import { Route, Routes } from 'react-router-dom';
 import Dashboard from './Dashboard';
@@ -9,16 +10,32 @@ import Login from './Login';
 import PrivateRoute from './PrivateRoute';
 import AssignmentView from './AssignmentView';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import CodeReviewerDashboard from './CodeReviewerDashboard';
 
 function App() {
+  const [jwt, setJwt] = useLocalState( "", "jwt" );
+  const [roles, setRoles] = useState( getRolesFromJwt() );
+
+  function getRolesFromJwt() {
+    return jwt
+      ? jwtDecode( jwt ).authorities
+      : [];
+  }
+
   return (
     <Routes>
       <Route
         path="/dashboard"
         element={
-          <PrivateRoute>
-            <Dashboard />
-          </PrivateRoute>
+          roles.find( role => role === "ROLE_CODE_REVIEWER" ) ? (
+            <PrivateRoute>
+              <CodeReviewerDashboard />
+            </PrivateRoute>
+          ) : (
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          )
         }
       />
       <Route
