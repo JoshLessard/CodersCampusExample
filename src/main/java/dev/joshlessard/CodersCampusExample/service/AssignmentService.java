@@ -1,6 +1,7 @@
 package dev.joshlessard.CodersCampusExample.service;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,19 @@ public class AssignmentService {
         Assignment assignment = new Assignment();
         assignment.setStatus( AssignmentStatusEnum.PENDING_SUBMISSION.status() );
         assignment.setUser( user );
+        assignment.setNumber( nextAssignmentNumber( user ) );
 
         return assignmentRepository.save( assignment );
+    }
+
+    private int nextAssignmentNumber( User user ) {
+        return assignmentRepository.findByUser( user )
+            .stream()
+            .map( Assignment::getNumber )
+            .filter( Objects::nonNull )
+            .max( Integer::compare )
+            .orElse( 0 )
+            + 1;
     }
 
     public Assignment save( Assignment assignment ) {
