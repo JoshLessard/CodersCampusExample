@@ -9,6 +9,16 @@ const CodeReviewerDashboard = () => {
     const [jwt, setJwt] = useLocalState( "", "jwt" )
     const [assignments, setAssignments] = useState( null );
 
+    function claimAssignment( assignmentId ) {
+        ajax( `/api/assignments/${assignmentId}/claim`, "POST", jwt )
+            .then( assignment => {
+                const assignmentsCopy = [...assignments];
+                const index = assignmentsCopy.findIndex( a => a.id === assignment.id );
+                assignmentsCopy[index] = assignment;
+                setAssignments( assignmentsCopy );
+            } );
+    }
+
     useEffect( () => {
       ajax( "/api/assignments", "GET", jwt )
         .then( assignmentsData => setAssignments( assignmentsData ) );
@@ -84,10 +94,10 @@ const CodeReviewerDashboard = () => {
                         <Button
                             variant="secondary"
                             onClick={ () => {
-                            window.location.href = `/assignments/${assignment.id}`;
+                             claimAssignment( assignment.id )
                             }}
                         >
-                            Edit
+                            Claim
                         </Button>
                         </Card.Body>
                     </Card>

@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -22,7 +23,10 @@ public class Assignment {
 
     @ManyToOne( optional = false )
     private User user;
-    // TODO: private User assignedTo;
+
+    @ManyToOne
+    @JoinColumn( name = "code_reviewer_user_id" )
+    private User codeReviewer;
 
 
     public Long getId() {
@@ -79,5 +83,13 @@ public class Assignment {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public User getCodeReviewer() {
+        return codeReviewer;
+    }
+
+    public void setCodeReviewer( User codeReviewer ) {
+        this.codeReviewer = codeReviewer;
     }
 }

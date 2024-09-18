@@ -1,7 +1,5 @@
 package dev.joshlessard.CodersCampusExample.service;
 
-import static java.util.Collections.emptyList;
-
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -11,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import dev.joshlessard.CodersCampusExample.domain.Assignment;
 import dev.joshlessard.CodersCampusExample.domain.User;
+import dev.joshlessard.CodersCampusExample.domain.exceptions.AssignmentNotFoundException;
 import dev.joshlessard.CodersCampusExample.enums.AssignmentStatusEnum;
 import dev.joshlessard.CodersCampusExample.enums.AuthorityEnum;
 import dev.joshlessard.CodersCampusExample.repository.AssignmentRepository;
@@ -62,5 +61,17 @@ public class AssignmentService {
 
     public Optional<Assignment> findById( long id ) {
         return assignmentRepository.findById( id );
+    }
+
+    public Assignment claimAssignment( long assignmentId, User codeReviewer ) {
+        Assignment assignment = assignmentRepository.findById( assignmentId )
+            .orElseThrow( () -> new AssignmentNotFoundException( assignmentId ) );
+        if ( assignment.getCodeReviewer() == null ) {
+            assignment.setCodeReviewer( codeReviewer );
+            assignment.setStatus( AssignmentStatusEnum.IN_REVIEW.status() );
+            return assignmentRepository.save( assignment );
+        } else {
+            return assignment;
+        }
     }
 }

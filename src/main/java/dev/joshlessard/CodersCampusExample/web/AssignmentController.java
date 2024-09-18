@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.joshlessard.CodersCampusExample.domain.Assignment;
 import dev.joshlessard.CodersCampusExample.domain.User;
 import dev.joshlessard.CodersCampusExample.dto.AssignmentResponseDto;
-import dev.joshlessard.CodersCampusExample.enums.AssignmentStatusEnum;
 import dev.joshlessard.CodersCampusExample.service.AssignmentService;
 
 @RestController
@@ -47,6 +45,12 @@ public class AssignmentController {
         Assignment newAssignment = assignmentService.saveNewAssignmentFor( user );
 
         return ResponseEntity.ok( newAssignment );
+    }
+
+    @PostMapping( "{assignmentId}/claim")
+    public ResponseEntity<?> claimAssignment( @PathVariable long assignmentId, @AuthenticationPrincipal User user ) {
+        Assignment claimedAssignment = assignmentService.claimAssignment( assignmentId, user );
+        return ResponseEntity.ok( claimedAssignment );
     }
 
     @PutMapping( "{assignmentId}" )

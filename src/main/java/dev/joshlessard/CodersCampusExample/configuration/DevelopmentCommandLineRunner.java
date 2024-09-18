@@ -42,17 +42,22 @@ public class DevelopmentCommandLineRunner implements CommandLineRunner {
         codeReviewer.setAuthorities( List.of( codeReviewerRole ) );
         userRepository.save( codeReviewer );
 
-        assignmentRepository.save( createAssignment( me ) );
-        assignmentRepository.save( createAssignment( me ) );
-        assignmentRepository.save( createAssignment( me ) );
-        assignmentRepository.save( createAssignment( me ) );
-        assignmentRepository.save( createAssignment( me ) );
+        int nextAssignmentNumber = 1;
+        assignmentRepository.save( createAssignment( me, "Submitted", nextAssignmentNumber++ ) );
+        assignmentRepository.save( createAssignment( me, "Submitted", nextAssignmentNumber++ ) );
+        assignmentRepository.save( createAssignment( me, "Submitted", nextAssignmentNumber++ ) );
+        assignmentRepository.save( createAssignment( me, "Pending Submission", nextAssignmentNumber++ ) );
+        assignmentRepository.save( createAssignment( me, "Pending Submission", nextAssignmentNumber++ ) );
+        assignmentRepository.save( createAssignment( me, "Pending Submission", nextAssignmentNumber++ ) );
+        assignmentRepository.save( createAssignment( me, "Pending Submission", nextAssignmentNumber++ ) );
+        assignmentRepository.save( createAssignment( me, "Pending Submission", nextAssignmentNumber++ ) );
     }
 
-    private Assignment createAssignment( User user ) {
+    private Assignment createAssignment( User user, String status, int assignmentNumber ) {
         Assignment assignment = new Assignment();
+        assignment.setNumber( assignmentNumber );
         assignment.setUser( user );
-        assignment.setStatus( "Pending Submission" );
+        assignment.setStatus( status );
         assignment.setGithubUrl( "https://www.byteme.com" );
         assignment.setBranch( "master" );
         return assignment;
