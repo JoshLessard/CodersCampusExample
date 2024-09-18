@@ -1,5 +1,7 @@
 package dev.joshlessard.CodersCampusExample.service;
 
+import static java.util.Collections.emptyList;
+
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import dev.joshlessard.CodersCampusExample.domain.Assignment;
 import dev.joshlessard.CodersCampusExample.domain.User;
 import dev.joshlessard.CodersCampusExample.enums.AssignmentStatusEnum;
+import dev.joshlessard.CodersCampusExample.enums.AuthorityEnum;
 import dev.joshlessard.CodersCampusExample.repository.AssignmentRepository;
 
 @Service
@@ -46,7 +49,15 @@ public class AssignmentService {
     }
 
     public Collection<Assignment> findByUser( User user ) {
-        return assignmentRepository.findByUser( user );
+        return isCodeReviewer( user )
+            ? assignmentRepository.findByCodeReviewer( user )
+            : assignmentRepository.findByUser( user );
+    }
+
+    private boolean isCodeReviewer( User user ) {
+        return user.getAuthorities()
+            .stream()
+            .anyMatch( auth -> AuthorityEnum.ROLE_CODE_REVIEWER.name().equals( auth.getAuthority() ) );
     }
 
     public Optional<Assignment> findById( long id ) {
