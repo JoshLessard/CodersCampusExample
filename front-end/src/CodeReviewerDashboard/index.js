@@ -9,6 +9,10 @@ const CodeReviewerDashboard = () => {
     const [jwt, setJwt] = useLocalState( "", "jwt" )
     const [assignments, setAssignments] = useState( null );
 
+    function editReview( assignmentId ) {
+        window.location.href = `/assignments/${assignmentId}`;
+    }
+
     function claimAssignment( assignmentId ) {
         ajax( `/api/assignments/${assignmentId}/claim`, "POST", jwt )
             .then( assignment => {
@@ -81,10 +85,10 @@ const CodeReviewerDashboard = () => {
                         <Button
                             variant="secondary"
                             onClick={ () => {
-                             claimAssignment( assignment.id )
+                             editReview( assignment.id )
                             }}
                         >
-                            Claim
+                            Edit
                         </Button>
                         </Card.Body>
                     </Card>
@@ -169,10 +173,10 @@ const CodeReviewerDashboard = () => {
                         <Button
                             variant="secondary"
                             onClick={ () => {
-                             claimAssignment( assignment.id )
+                             window.location.href = `/assignments/${assignment.id}`
                             }}
                         >
-                            Claim
+                            View
                         </Button>
                         </Card.Body>
                     </Card>
