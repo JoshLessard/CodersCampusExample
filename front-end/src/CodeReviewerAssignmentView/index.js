@@ -2,8 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { useLocalState } from "../util/useLocalStorage";
 import ajax from "../Services/fetchService";
 import { Badge, Button, ButtonGroup, Col, Container, Dropdown, DropdownButton, Form, Row } from "react-bootstrap";
+import StatusBadge from "../StatusBadge";
+import { useNavigate } from "react-router-dom";
 
 const CodeReviewerAssignmentView = () => {
+    const navigate = useNavigate();
     const [jwt, setJwt] = useLocalState( "", "jwt" );
     const assignmentId = window.location.href.split( "/assignments/" )[1]; // PUKE...should pass in the assignment ID as an argument
     const [assignment, setAssignment] = useState( {
@@ -24,7 +27,6 @@ const CodeReviewerAssignmentView = () => {
     }
 
     function save( status ) {
-        // this implies that the student is submitting the assignment for the first time
         if ( assignment.status !== status ) {
             updateAssignment( "status", status );
         } else {
@@ -67,7 +69,7 @@ const CodeReviewerAssignmentView = () => {
                     }
                 </Col>
                 <Col>
-                    <Badge pill bg="info" style={{ fontSize: "1em" }}>{assignment.status}</Badge>
+                    <StatusBadge text={assignment.status} />
                 </Col>
             </Row>
             
@@ -152,7 +154,7 @@ const CodeReviewerAssignmentView = () => {
                             <Button
                                 size="lg"
                                 variant="secondary"
-                                onClick={ () => window.location.href="/dashboard" }
+                                onClick={ () => navigate( "/dashboard" ) }
                             >
                                 Back
                             </Button>

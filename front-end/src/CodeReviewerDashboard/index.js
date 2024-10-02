@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { useLocalState } from "../util/useLocalStorage";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ajax from "../Services/fetchService";
 import { Badge, Button, Card, Col, Container, Row } from "react-bootstrap";
+import StatusBadge from "../StatusBadge";
 
 const CodeReviewerDashboard = () => {
-
+    const navigate = useNavigate();
     const [jwt, setJwt] = useLocalState( "", "jwt" )
     const [assignments, setAssignments] = useState( null );
 
     function editReview( assignmentId ) {
-        window.location.href = `/assignments/${assignmentId}`;
+        navigate( `/assignments/${assignmentId}` );
     }
 
     function claimAssignment( assignmentId ) {
@@ -30,7 +31,7 @@ const CodeReviewerDashboard = () => {
 
     function createAssignment() {
       ajax( "/api/assignments", "POST", jwt )
-        .then( assignment => window.location.href = `/assignments/${assignment.id}` );
+        .then( assignment => navigate( `/assignments/${assignment.id}` ) );
     }
 
     return (
@@ -43,7 +44,7 @@ const CodeReviewerDashboard = () => {
                     href="#"
                     onClick={ () => {
                         setJwt( null );
-                        window.location.href = '/login';
+                        navigate( '/login' );
                     }}
                   >
                       Log Out
@@ -70,9 +71,7 @@ const CodeReviewerDashboard = () => {
                         <Card.Body className="d-flex flex-column justify-content-around">
                         <Card.Title>Assignment #{assignment.number}</Card.Title>
                         <div className="align-items-start">
-                            <Badge pill bg="info" className="" style={{ fontSize: "1em" }}>
-                            {assignment.status}
-                            </Badge>
+                            <StatusBadge text={assignment.status} />
                         </div>
                         <Card.Text style={{ marginTop: "1em" }}>
                             <p>
@@ -106,37 +105,39 @@ const CodeReviewerDashboard = () => {
                 className="d-grid gap-5"
                 style={{ gridTemplateColumns: "repeat( auto-fill, 18rem )" }}
                 >
-                { assignments.filter( assignment => assignment.status === "Submitted" ).map( assignment => (
-                    <Card
-                        key={assignment.id}
-                        style={{ width: "18rem", height: "18rem" }}
-                    >
-                        <Card.Body className="d-flex flex-column justify-content-around">
-                        <Card.Title>Assignment #{assignment.number}</Card.Title>
-                        <div className="align-items-start">
-                            <Badge pill bg="info" className="" style={{ fontSize: "1em" }}>
-                            {assignment.status}
-                            </Badge>
-                        </div>
-                        <Card.Text style={{ marginTop: "1em" }}>
-                            <p>
-                            <b>GitHub URL:</b> {assignment.githubUrl}
-                            </p>
-                            <p>
-                            <b>Branch:</b> {assignment.branch}
-                            </p>
-                        </Card.Text>
-                        <Button
-                            variant="secondary"
-                            onClick={ () => {
-                             claimAssignment( assignment.id )
-                            }}
+                { assignments
+                    .filter( assignment => assignment.status === "Submitted" || assignment.status === "Resubmitted" )
+                    .sort( (a, b) => a.status === "Resubmitted" ? -1 : 0 )
+                    .map( assignment => (
+                        <Card
+                            key={assignment.id}
+                            style={{ width: "18rem", height: "18rem" }}
                         >
-                            Claim
-                        </Button>
-                        </Card.Body>
-                    </Card>
-                ))}
+                            <Card.Body className="d-flex flex-column justify-content-around">
+                            <Card.Title>Assignment #{assignment.number}</Card.Title>
+                            <div className="align-items-start">
+                                <StatusBadge text={assignment.status} />
+                            </div>
+                            <Card.Text style={{ marginTop: "1em" }}>
+                                <p>
+                                <b>GitHub URL:</b> {assignment.githubUrl}
+                                </p>
+                                <p>
+                                <b>Branch:</b> {assignment.branch}
+                                </p>
+                            </Card.Text>
+                            <Button
+                                variant="secondary"
+                                onClick={ () => {
+                                claimAssignment( assignment.id )
+                                }}
+                            >
+                                Claim
+                            </Button>
+                            </Card.Body>
+                        </Card>
+                    ))
+                }
                 </div>
             ) : (
                 <></>
@@ -158,9 +159,7 @@ const CodeReviewerDashboard = () => {
                         <Card.Body className="d-flex flex-column justify-content-around">
                         <Card.Title>Assignment #{assignment.number}</Card.Title>
                         <div className="align-items-start">
-                            <Badge pill bg="info" className="" style={{ fontSize: "1em" }}>
-                            {assignment.status}
-                            </Badge>
+                            <StatusBadge text={assignment.status} />
                         </div>
                         <Card.Text style={{ marginTop: "1em" }}>
                             <p>
@@ -173,7 +172,7 @@ const CodeReviewerDashboard = () => {
                         <Button
                             variant="secondary"
                             onClick={ () => {
-                             window.location.href = `/assignments/${assignment.id}`
+                             navigate( `/assignments/${assignment.id}` )
                             }}
                         >
                             View

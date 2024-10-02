@@ -16,7 +16,7 @@ public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
             SELECT
                 a
             FROM Assignment a
-            WHERE a.status = 'Submitted'
+            WHERE (a.status = 'Submitted' AND (a.codeReviewer IS NULL OR a.codeReviewer = :codeReviewer))
             OR a.codeReviewer = :codeReviewer
             """
     )
