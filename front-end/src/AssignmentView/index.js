@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocalState } from "../util/useLocalStorage";
 import ajax from "../Services/fetchService";
-import { Badge, Button, ButtonGroup, Col, Container, Dropdown, DropdownButton, Form, Row } from "react-bootstrap";
+import { Button, ButtonGroup, Col, Container, Dropdown, DropdownButton, Form, Row } from "react-bootstrap";
 import StatusBadge from "../StatusBadge";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../UserProvider";
@@ -18,7 +17,22 @@ const AssignmentView = () => {
     } );
     const [assignmentEnums, setAssignmentEnums] = useState( [] );
     const [assignmentStatuses, setAssignmentStatuses] = useState( [] );
+    const [comment, setComment] = useState( {
+        text: "",
+        assignment: assignmentId
+    } );
     const previousAssignment = useRef( assignment );
+
+    function submitComment() {
+        ajax( '/api/comments', 'POST', user.jwt, comment )
+            .then( data => console.log( data ) );
+    }
+
+    function updateComment( newValue ) {
+        const updatedComment = {...comment};
+        updatedComment.text = newValue;
+        setComment( updatedComment );
+    }
 
     function updateAssignment( prop, value ) {
         const updatedAssignment = {...assignment};
@@ -163,6 +177,13 @@ const AssignmentView = () => {
                             </div>
                         )}
 
+                        <div className="mt-5">
+                            <textarea
+                                style={{width: "100%"}}
+                                onChange={ e => updateComment( e.target.value ) }
+                            />
+                            <Button onClick={() => submitComment()}>Post Comment</Button>
+                        </div>
                     </>
                 )
                 : <></>
