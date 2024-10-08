@@ -4,10 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import ajax from "../Services/fetchService";
 import { Badge, Button, Card, Col, Container, Row } from "react-bootstrap";
 import StatusBadge from "../StatusBadge";
+import { useUser } from "../UserProvider";
 
 const CodeReviewerDashboard = () => {
     const navigate = useNavigate();
-    const [jwt, setJwt] = useLocalState( "", "jwt" )
+    const user = useUser();
     const [assignments, setAssignments] = useState( null );
 
     function editReview( assignmentId ) {
@@ -15,7 +16,7 @@ const CodeReviewerDashboard = () => {
     }
 
     function claimAssignment( assignmentId ) {
-        ajax( `/api/assignments/${assignmentId}/claim`, "POST", jwt )
+        ajax( `/api/assignments/${assignmentId}/claim`, "POST", user.jwt )
             .then( assignment => {
                 const assignmentsCopy = [...assignments];
                 const index = assignmentsCopy.findIndex( a => a.id === assignment.id );
@@ -25,12 +26,12 @@ const CodeReviewerDashboard = () => {
     }
 
     useEffect( () => {
-      ajax( "/api/assignments", "GET", jwt )
+      ajax( "/api/assignments", "GET", user.jwt )
         .then( assignmentsData => setAssignments( assignmentsData ) );
-    }, [jwt] );
+    }, [user.jwt] );
 
     function createAssignment() {
-      ajax( "/api/assignments", "POST", jwt )
+      ajax( "/api/assignments", "POST", user.jwt )
         .then( assignment => navigate( `/assignments/${assignment.id}` ) );
     }
 
@@ -43,7 +44,7 @@ const CodeReviewerDashboard = () => {
                     style={{ cursor: "pointer" }}
                     href="#"
                     onClick={ () => {
-                        setJwt( null );
+                        user.setJwt( null );
                         navigate( '/login' );
                     }}
                   >

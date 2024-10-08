@@ -4,10 +4,11 @@ import ajax from "../Services/fetchService";
 import { Badge, Button, ButtonGroup, Col, Container, Dropdown, DropdownButton, Form, Row } from "react-bootstrap";
 import StatusBadge from "../StatusBadge";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../UserProvider";
 
 const AssignmentView = () => {
     const navigate = useNavigate();
-    const [jwt, setJwt] = useLocalState( "", "jwt" );
+    const user = useUser();
     const assignmentId = window.location.href.split( "/assignments/" )[1]; // PUKE...should pass in the assignment ID as an argument
     const [assignment, setAssignment] = useState( {
         githubUrl: "",
@@ -35,7 +36,7 @@ const AssignmentView = () => {
     }
 
     function putAssignment() {
-        ajax( `/api/assignments/${assignmentId}`, "PUT", jwt, assignment )
+        ajax( `/api/assignments/${assignmentId}`, "PUT", user.jwt, assignment )
             .then( assignmentData => { setAssignment( assignmentData ); } );
     }
 
@@ -47,13 +48,13 @@ const AssignmentView = () => {
     }, [assignment]);
 
     useEffect( () => {
-        ajax( `/api/assignments/${assignmentId}`, "GET", jwt )
+        ajax( `/api/assignments/${assignmentId}`, "GET", user.jwt )
             .then( assignmentResponse => {
                 setAssignment( assignmentResponse.assignment );
                 setAssignmentEnums( assignmentResponse.assignmentEnums );
                 setAssignmentStatuses( assignmentResponse.statusEnums );
             } );
-    }, [jwt, assignmentId] );
+    }, [user.jwt, assignmentId] );
 
     return (
         <Container className="mt-5">

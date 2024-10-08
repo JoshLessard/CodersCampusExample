@@ -12,14 +12,19 @@ import AssignmentView from './AssignmentView';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CodeReviewerDashboard from './CodeReviewerDashboard';
 import CodeReviewerAssignmentView from './CodeReviewerAssignmentView';
+import { UserProvider, useUser } from './UserProvider';
 
 function App() {
-  const [jwt, setJwt] = useLocalState( "", "jwt" );
-  const [roles, setRoles] = useState( getRolesFromJwt() );
+  const [roles, setRoles] = useState( [] );
+  const user = useUser();
+
+  useEffect( () => {
+    setRoles( getRolesFromJwt() );
+  }, [user.jwt] );
 
   function getRolesFromJwt() {
-    return jwt
-      ? jwtDecode( jwt ).authorities
+    return user.jwt
+      ? jwtDecode( user.jwt ).authorities
       : [];
   }
 

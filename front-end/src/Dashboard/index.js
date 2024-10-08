@@ -4,19 +4,20 @@ import { Link, useNavigate } from "react-router-dom";
 import ajax from "../Services/fetchService";
 import { Badge, Button, Card, Col, Row } from "react-bootstrap";
 import StatusBadge from "../StatusBadge";
+import { useUser } from "../UserProvider";
 
 const Dashboard = () => {
     const navigate = useNavigate();
-    const [jwt, setJwt] = useLocalState( "", "jwt" )
+    const user = useUser();
     const [assignments, setAssignments] = useState( null );
 
     useEffect( () => {
-      ajax( "/api/assignments", "GET", jwt )
+      ajax( "/api/assignments", "GET", user.jwt )
         .then( assignmentsData => setAssignments( assignmentsData ) );
-    }, [jwt] );
+    }, [user.jwt] );
 
     function createAssignment() {
-      ajax( "/api/assignments", "POST", jwt )
+      ajax( "/api/assignments", "POST", user.jwt )
         .then( assignment => navigate( `/assignments/${assignment.id}` ) );
     }
 
@@ -29,7 +30,7 @@ const Dashboard = () => {
                     style={{ cursor: "pointer" }}
                     href="#"
                     onClick={ () => {
-                        setJwt( null );
+                        user.setJwt( null );
                         navigate( '/login' );
                     }}
                   >
