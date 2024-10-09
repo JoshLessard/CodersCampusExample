@@ -25,4 +25,15 @@ public class Comment {
     private LocalDateTime createdDate;
     @Column( columnDefinition = "TEXT" )
     private String text;
+
+    public Comment( User creator, Assignment assignment, String text, LocalDateTime createdDate ) {
+        this.creator = creator;
+        this.assignment = assignment;
+        this.text = text;
+        this.createdDate = createdDate;
+    }
+
+    public long getId() {
+        return id;
+    }
 }

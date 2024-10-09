@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import ajax from "../Services/fetchService";
 import { Button, ButtonGroup, Col, Container, Dropdown, DropdownButton, Form, Row } from "react-bootstrap";
 import StatusBadge from "../StatusBadge";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useUser } from "../UserProvider";
 
 const AssignmentView = () => {
     const navigate = useNavigate();
     const user = useUser();
-    const assignmentId = window.location.href.split( "/assignments/" )[1]; // PUKE...should pass in the assignment ID as an argument
+    const { assignmentId } = useParams();
     const [assignment, setAssignment] = useState( {
         githubUrl: "",
         branch: "",
@@ -19,7 +19,7 @@ const AssignmentView = () => {
     const [assignmentStatuses, setAssignmentStatuses] = useState( [] );
     const [comment, setComment] = useState( {
         text: "",
-        assignment: assignmentId
+        assignmentId: parseInt(assignmentId)
     } );
     const previousAssignment = useRef( assignment );
 
