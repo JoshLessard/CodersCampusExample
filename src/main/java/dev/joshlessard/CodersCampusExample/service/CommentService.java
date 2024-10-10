@@ -1,6 +1,7 @@
 package dev.joshlessard.CodersCampusExample.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,5 +29,9 @@ public class CommentService {
         Assignment assignment = assignmentRepository.getReferenceById( commentDto.getAssignmentId() );
         Comment comment = new Comment( user, assignment, commentDto.getText(), LocalDateTime.now() );
         return commentRepository.save( comment );
+    }
+
+    public List<Comment> getCommentsByAssignmentId( long assignmentId ) {
+        return commentRepository.findByAssignmentId( assignmentId );
     }
 }

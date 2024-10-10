@@ -21,11 +21,16 @@ const AssignmentView = () => {
         text: "",
         assignmentId: parseInt(assignmentId)
     } );
+    const [comments, setComments] = useState( [] );
     const previousAssignment = useRef( assignment );
 
     function submitComment() {
         ajax( '/api/comments', 'POST', user.jwt, comment )
-            .then( data => console.log( data ) );
+            .then( commentData => {
+                const commentsCopy = [...comments];
+                commentsCopy.push( commentData );
+                setComments( commentsCopy );
+            } );
     }
 
     function updateComment( newValue ) {
@@ -53,6 +58,11 @@ const AssignmentView = () => {
         ajax( `/api/assignments/${assignmentId}`, "PUT", user.jwt, assignment )
             .then( assignmentData => { setAssignment( assignmentData ); } );
     }
+
+    useEffect( () => {
+        ajax( `/api/comments?assignmentId=${assignmentId}`, "GET", user.jwt )
+            .then( commentData => setComments( commentData ) );
+    }, [] );
 
     useEffect( () => {
         if ( previousAssignment.current.status !== assignment.status ) {
@@ -183,6 +193,12 @@ const AssignmentView = () => {
                                 onChange={ e => updateComment( e.target.value ) }
                             />
                             <Button onClick={() => submitComment()}>Post Comment</Button>
+                        </div>
+
+                        <div className="mt-5">
+                            {comments.map( comment => (
+                                <div><span style={{ fontWeight: "bold" }}>{comment.author}</span>: {comment.text}</div>
+                            ))}
                         </div>
                     </>
                 )

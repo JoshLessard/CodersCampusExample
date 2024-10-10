@@ -26,6 +26,11 @@ public class Comment {
     @Column( columnDefinition = "TEXT" )
     private String text;
 
+    @SuppressWarnings("unused")
+    private Comment() {
+        // Hibernate
+    }
+
     public Comment( User creator, Assignment assignment, String text, LocalDateTime createdDate ) {
         this.creator = creator;
         this.assignment = assignment;
@@ -35,5 +40,13 @@ public class Comment {
 
     public long getId() {
         return id;
+    }
+
+    public User creator() {
+        return creator;
+    }
+
+    public String text() {
+        return text;
     }
 }
