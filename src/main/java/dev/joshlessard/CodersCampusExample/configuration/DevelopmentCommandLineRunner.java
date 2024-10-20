@@ -27,6 +27,7 @@ public class DevelopmentCommandLineRunner implements CommandLineRunner {
     @Override
     public void run( String... args ) throws Exception {
         User me = new User();
+        me.setName( "Josh Lessard" );
         me.setUsername( "josh.lessard@gmail.com" );
         me.setPassword( "$2a$10$tLwHdYyGRHPjgKGqvBWMbe2DYaZ6rfx2GBFkAYwYLRe1x2K1HywHW" );
         Authority studentRole = new Authority( "ROLE_STUDENT" );
@@ -35,6 +36,7 @@ public class DevelopmentCommandLineRunner implements CommandLineRunner {
         userRepository.save( me );
 
         User codeReviewer = new User();
+        codeReviewer.setName( "Code Reviewer" );
         codeReviewer.setUsername( "code_reviewer" );
         codeReviewer.setPassword( "$2a$10$tLwHdYyGRHPjgKGqvBWMbe2DYaZ6rfx2GBFkAYwYLRe1x2K1HywHW" );
         Authority codeReviewerRole = new Authority( "ROLE_CODE_REVIEWER" );

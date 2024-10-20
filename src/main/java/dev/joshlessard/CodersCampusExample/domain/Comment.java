@@ -46,7 +46,15 @@ public class Comment {
         return creator;
     }
 
+    public LocalDateTime createdDate() {
+        return createdDate;
+    }
+
     public String text() {
         return text;
+    }
+
+    public void updateText( String text ) {
+        this.text = text;
     }
 }

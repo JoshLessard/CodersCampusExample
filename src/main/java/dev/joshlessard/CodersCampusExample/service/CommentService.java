@@ -34,4 +34,13 @@ public class CommentService {
     public List<Comment> getCommentsByAssignmentId( long assignmentId ) {
         return commentRepository.findByAssignmentId( assignmentId );
     }
+
+    public Comment updateText( long commentId, CommentDto commentDto, User user ) {
+        Comment commentToUpdate = commentRepository.findById( commentId ).orElseThrow();
+        if ( ! user.getId().equals( commentToUpdate.creator().getId() ) ) {
+            throw new IllegalStateException();
+        }
+        commentToUpdate.updateText( commentDto.getText() );
+        return commentRepository.save( commentToUpdate );
+    }
 }

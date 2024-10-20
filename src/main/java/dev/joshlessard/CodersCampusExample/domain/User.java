@@ -28,6 +28,7 @@ public class User implements UserDetails {
     private Long id;
     private LocalDate cohortStartDate;
     private String username;
+    private String name;
     @JsonIgnore
     private String password;
     @JsonIgnore
@@ -48,6 +49,14 @@ public class User implements UserDetails {
 
     public void setCohortStartDate(LocalDate cohortStartDate) {
         this.cohortStartDate = cohortStartDate;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName( String name ) {
+        this.name = name;
     }
 
     @Override
