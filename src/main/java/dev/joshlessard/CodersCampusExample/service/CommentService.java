@@ -43,4 +43,12 @@ public class CommentService {
         commentToUpdate.updateText( commentDto.getText() );
         return commentRepository.save( commentToUpdate );
     }
+
+    public void deleteComment( long commentId, User user ) {
+        Comment commentToDelete = commentRepository.findById( commentId ).orElseThrow();
+        if ( ! user.getId().equals( commentToDelete.creator().getId() ) ) {
+            throw new IllegalStateException();
+        }
+        commentRepository.delete( commentToDelete );
+    }
 }

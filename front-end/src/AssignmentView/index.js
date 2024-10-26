@@ -5,6 +5,8 @@ import StatusBadge from "../StatusBadge";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUser } from "../UserProvider";
 import Comment from "../Comment";
+import { useInterval } from "../util/useInterval";
+import dayjs from "dayjs";
 
 const AssignmentView = () => {
     const navigate = useNavigate();
@@ -25,6 +27,18 @@ const AssignmentView = () => {
     const [comments, setComments] = useState( [] );
     const previousAssignment = useRef( assignment );
 
+    useInterval( () => {
+        updateCommentTimeDisplay();
+    }, 1000 * 5 );
+
+    function updateCommentTimeDisplay() {
+        console.log( "Comments in update: ", comments );
+        const commentsCopy = [...comments];
+        commentsCopy.forEach( comment => comment.createdDate = dayjs( comment.createdDate ) );
+        console.log( "Copy of comments is: ",commentsCopy );
+        setComments( commentsCopy );
+    }
+
     function handleEditComment( commentId ) {
         const index = comments.findIndex( comment => comment.id === commentId )
         const commentCopy = {
@@ -35,9 +49,13 @@ const AssignmentView = () => {
     }
 
     function handleDeleteComment( commentId ) {
-        // TODO: send DELETE request to server
-        console.log( "Delete comment", commentId );
-        
+        ajax( `/api/comments/${commentId}`, "DELETE", user.jwt )
+            .then( response => {
+                const commentsCopy = [...comments];
+                const index = commentsCopy.findIndex( c => c.id === commentId );
+                commentsCopy.splice( index, 1 );
+                setComments( commentsCopy );
+            } );
     }
 
     function submitComment() {
@@ -89,7 +107,6 @@ const AssignmentView = () => {
         } else {
             putAssignment();
         }
-
     }
 
     function putAssignment() {
@@ -237,12 +254,8 @@ const AssignmentView = () => {
                         <div className="mt-5">
                             {comments.map( comment => (
                                 <Comment
-                                    id={comment.id}
                                     key={comment.id}
-                                    createdDate={comment.createdDate}
-                                    author={comment.author}
-                                    authorUsername={comment.authorUsername}
-                                    text={comment.text}
+                                    commentData={comment}
                                     emitEditComment={handleEditComment}
                                     emitDeleteComment={handleDeleteComment}
                                 />

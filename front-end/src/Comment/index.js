@@ -7,39 +7,37 @@ import relativeTime from "dayjs/plugin/relativeTime";
 const Comment = (props) => {
     const user = useUser();
     const decodedJwt = jwtDecode( user.jwt );
-    const {id, createdDate, author, authorUsername, text, emitEditComment, emitDeleteComment} = props;
+    const comment = props.commentData;
+    const {emitEditComment, emitDeleteComment} = props;
     const [commentRelativeTime, setCommentRelativeTime] = useState( null );
     
     useEffect( () => {
+        console.log( "Updating comment relative time" );
         updateCommentRelativeTime();
-    }, [] );
+    }, [comment.createdDate] );
 
     function updateCommentRelativeTime() {
         dayjs.extend( relativeTime );
-        setCommentRelativeTime( dayjs( createdDate ).fromNow() );
+        setCommentRelativeTime( dayjs( comment.createdDate ).fromNow() );
     }
-
-    setInterval( () => {
-        updateCommentRelativeTime();
-    }, 1000 * 30 );
     
     return (
         <>
             <div className="comment-bubble">
                 <div className="d-flex gap-5" style={{ fontWeight: "bold" }}>
-                    <div>{`${author}`}</div>
+                    <div>{`${comment.author}`}</div>
                     {
-                        decodedJwt.sub === authorUsername
+                        decodedJwt.sub === comment.authorUsername
                             ?
                                 <>
                                     <div
-                                        onClick={ () => emitEditComment( id ) }
+                                        onClick={ () => emitEditComment( comment.id ) }
                                         style={{ cursor: 'pointer', color: 'blue' }}
                                     >
                                         edit
                                     </div>
                                     <div
-                                        onClick={ () => emitDeleteComment( id ) }
+                                        onClick={ () => emitDeleteComment( comment.id ) }
                                         style={{ cursor: 'pointer', color: 'red' }}
                                     >
                                         delete
@@ -50,7 +48,7 @@ const Comment = (props) => {
                                 </>
                     }
                 </div>
-                <div>{text}</div>
+                <div>{comment.text}</div>
             </div>
             <div style={{ marginTop: "-1.25em", marginLeft: "1.4em", fontSize: "12px" }}>            
                 {commentRelativeTime}
