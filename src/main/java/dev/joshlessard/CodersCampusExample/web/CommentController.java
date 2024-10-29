@@ -39,7 +39,7 @@ public class CommentController {
 
     @PutMapping( "/{commentId}" )
     public ResponseEntity<CommentView> updateComment( @PathVariable long commentId, @RequestBody CommentDto commentDto, @AuthenticationPrincipal User user ) {
-        Comment updatedComment = commentService.updateText( commentId, commentDto, user );
+        Comment updatedComment = commentService.updateText( commentId, user, commentDto.getText() );
         return ResponseEntity.ok( CommentView.from( updatedComment ) );
     }
 

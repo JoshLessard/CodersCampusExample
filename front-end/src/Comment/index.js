@@ -12,7 +12,6 @@ const Comment = (props) => {
     const [commentRelativeTime, setCommentRelativeTime] = useState( null );
     
     useEffect( () => {
-        console.log( "Updating comment relative time" );
         updateCommentRelativeTime();
     }, [comment.createdDate] );
 

@@ -1,8 +1,6 @@
- import logo from './logo.svg';
- import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import './App.css';
 import { useEffect, useState } from 'react';
-import { useLocalState } from './util/useLocalStorage';
 import { Route, Routes } from 'react-router-dom';
 import Dashboard from './Dashboard';
 import Homepage from './Homepage';
@@ -12,7 +10,7 @@ import AssignmentView from './AssignmentView';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CodeReviewerDashboard from './CodeReviewerDashboard';
 import CodeReviewerAssignmentView from './CodeReviewerAssignmentView';
-import { UserProvider, useUser } from './UserProvider';
+import { useUser } from './UserProvider';
 
 function App() {
   const [roles, setRoles] = useState( [] );

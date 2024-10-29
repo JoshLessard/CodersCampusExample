@@ -35,12 +35,12 @@ public class CommentService {
         return commentRepository.findByAssignmentId( assignmentId );
     }
 
-    public Comment updateText( long commentId, CommentDto commentDto, User user ) {
+    public Comment updateText( long commentId, User user, String text ) {
         Comment commentToUpdate = commentRepository.findById( commentId ).orElseThrow();
         if ( ! user.getId().equals( commentToUpdate.creator().getId() ) ) {
             throw new IllegalStateException();
         }
-        commentToUpdate.updateText( commentDto.getText() );
+        commentToUpdate.updateText( text );
         return commentRepository.save( commentToUpdate );
     }
 

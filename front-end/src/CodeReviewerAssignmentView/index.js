@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocalState } from "../util/useLocalStorage";
 import ajax from "../Services/fetchService";
-import { Badge, Button, ButtonGroup, Col, Container, Dropdown, DropdownButton, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import StatusBadge from "../StatusBadge";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../UserProvider";
+import CommentContainer from "../CommentContainer";
 
 const CodeReviewerAssignmentView = () => {
     const navigate = useNavigate();
@@ -160,6 +160,8 @@ const CodeReviewerAssignmentView = () => {
                                 Back
                             </Button>
                         </div>
+
+                        <CommentContainer assignmentId={assignmentId} />
                     </>
                 )
                 : <></>
